@@ -1,0 +1,90 @@
+import { CSSProperties } from "react";
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import {
+  ArrayFieldTemplateItemType,
+  FormContextType,
+  RJSFSchema,
+  StrictRJSFSchema,
+} from "@rjsf/utils";
+
+/** The `ArrayFieldItemTemplate` component is the template used to render an items of an array.
+ *
+ * @param props - The `ArrayFieldTemplateItemType` props for the component
+ */
+export default function ArrayFieldItemTemplate<
+  T = any,
+  S extends StrictRJSFSchema = RJSFSchema,
+  F extends FormContextType = any,
+>(props: ArrayFieldTemplateItemType<T, S, F>) {
+  const {
+    children,
+    disabled,
+    hasToolbar,
+    hasMoveDown,
+    hasMoveUp,
+    hasRemove,
+    index,
+    onDropIndexClick,
+    onAddIndexClick,
+    onReorderClick,
+    readonly,
+    uiSchema,
+    registry,
+  } = props;
+  const { MoveDownButton, MoveUpButton, RemoveButton, AddButton } =
+    registry.templates.ButtonTemplates;
+  const btnStyle: CSSProperties = {
+    flex: 1,
+    paddingLeft: 6,
+    paddingRight: 6,
+    fontWeight: "bold",
+    minWidth: 0,
+  };
+  return (
+    <Grid container={true} alignItems="center">
+      <Grid item={true} xs style={{ overflow: "auto" }}>
+        <Box p={1}>
+          <Box>{children}</Box>
+        </Box>
+      </Grid>
+      {hasToolbar && (
+        <Grid item={true}>
+          {(hasMoveUp || hasMoveDown) && (
+            <MoveUpButton
+              style={btnStyle}
+              disabled={disabled || readonly || !hasMoveUp}
+              onClick={onReorderClick(index, index - 1)}
+              uiSchema={uiSchema}
+            />
+          )}
+          {(hasMoveUp || hasMoveDown) && (
+            <MoveDownButton
+              style={btnStyle}
+              disabled={disabled || readonly || !hasMoveDown}
+              onClick={onReorderClick(index, index + 1)}
+              uiSchema={uiSchema}
+            />
+          )}
+          {hasRemove ? (
+            <RemoveButton
+              style={btnStyle}
+              disabled={disabled || readonly}
+              onClick={onDropIndexClick(index)}
+              uiSchema={uiSchema}
+            />
+          ) : (
+            <div style={{ width: "32px", display: "inline-flex" }} />
+          )}
+
+          <AddButton
+            style={{ color: "white" }}
+            onClick={onAddIndexClick(index)}
+            disabled={disabled || readonly}
+            uiSchema={uiSchema}
+          />
+        </Grid>
+      )}
+    </Grid>
+  );
+}

@@ -1,8 +1,9 @@
-import React from "react";
+import React, { ChangeEvent,FocusEvent } from "react";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
 import {
-  processSelectValue,
+  enumOptionsIndexForValue,
+  enumOptionsValueForIndex,
   FormContextType,
   RJSFSchema,
   StrictRJSFSchema,
@@ -35,26 +36,19 @@ export default function SelectWidget<
   placeholder,
   rawErrors = [],
 }: WidgetProps<T, S, F>) {
-  const { enumOptions, enumDisabled } = options;
+  const { enumOptions, enumDisabled, emptyValue: optEmptyVal  } = options;
 
-  const emptyValue = multiple ? [] : "None";
+  const emptyValue = multiple ? [] : '';
+  const isEmpty = typeof value === 'undefined' || (multiple && value.length < 1) || (!multiple && value === emptyValue);
 
-  const _onChange = ({
-    target: { value },
-  }: React.ChangeEvent<{ name?: string; value: unknown }>) =>
-    onChange(
-      processSelectValue<T, S, F>(
-        schema,
-        value === emptyValue ? "" : value,
-        options,
-      ),
-    );
-  const _onBlur = ({ target: { value } }: React.FocusEvent<HTMLInputElement>) =>
-    onBlur(id, processSelectValue<T, S, F>(schema, value, options));
-  const _onFocus = ({
-    target: { value },
-  }: React.FocusEvent<HTMLInputElement>) =>
-    onFocus(id, processSelectValue<T, S, F>(schema, value, options));
+ 
+  const _onChange = ({ target: { value } }: ChangeEvent<{ value: string }>) =>
+    onChange(enumOptionsValueForIndex<S>(value, enumOptions, optEmptyVal));
+  const _onBlur = ({ target: { value } }: FocusEvent<HTMLInputElement>) =>
+    onBlur(id, enumOptionsValueForIndex<S>(value, enumOptions, optEmptyVal));
+  const _onFocus = ({ target: { value } }: FocusEvent<HTMLInputElement>) =>
+    onFocus(id, enumOptionsValueForIndex<S>(value, enumOptions, optEmptyVal));
+  const selectedIndexes = enumOptionsIndexForValue<S>(value, enumOptions, multiple);
 
   return (
     <TextField
@@ -62,7 +56,7 @@ export default function SelectWidget<
       name={id}
       label={label || schema.title}
       select
-      value={typeof value === "undefined" ? emptyValue : value}
+      value={isEmpty ? emptyValue : selectedIndexes}
       required={required}
       disabled={disabled || readonly}
       autoFocus={autofocus}

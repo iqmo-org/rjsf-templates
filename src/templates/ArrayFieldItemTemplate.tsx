@@ -56,6 +56,7 @@ export default function ArrayFieldItemTemplate<
               disabled={disabled || readonly || !hasMoveUp}
               onClick={onReorderClick(index, index - 1)}
               uiSchema={uiSchema}
+              registry={registry}
             />
           )}
           {(hasMoveUp || hasMoveDown) && (
@@ -64,6 +65,7 @@ export default function ArrayFieldItemTemplate<
               disabled={disabled || readonly || !hasMoveDown}
               onClick={onReorderClick(index, index + 1)}
               uiSchema={uiSchema}
+              registry={registry}
             />
           )}
           {hasRemove ? (
@@ -72,6 +74,7 @@ export default function ArrayFieldItemTemplate<
               disabled={disabled || readonly}
               onClick={onDropIndexClick(index)}
               uiSchema={uiSchema}
+              registry={registry}
             />
           ) : (
             <div style={{ width: "32px", display: "inline-flex" }} />
@@ -82,6 +85,7 @@ export default function ArrayFieldItemTemplate<
             onClick={onAddIndexClick(index)}
             disabled={disabled || readonly}
             uiSchema={uiSchema}
+            registry={registry}
           />
         </Grid>
       )}

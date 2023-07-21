@@ -1,7 +1,7 @@
 import React, { useMemo, useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import {
-  processSelectValue,
+  enumOptionsValueForIndex,
   FormContextType,
   RJSFSchema,
   StrictRJSFSchema,
@@ -57,21 +57,21 @@ export default function AutocompleteWidget<
   ) => (val: any) => void = uiSchema && uiSchema["ui:autocompletFunction"];
 
   const _onChange = (e: React.SyntheticEvent, value: any) =>
-    onChange(processSelectValue<T, S, F>(schema, value, options));
+    onChange(enumOptionsValueForIndex<S>(value, enumOptions));
 
   const _onBlur = ({
     target: { value },
   }: React.FocusEvent<HTMLInputElement>) => {
     if (autocompleteType && inputValue) {
-      onChange(processSelectValue<T, S, F>(schema, inputValue, options));
+      onChange(enumOptionsValueForIndex<S>(value, enumOptions));
     }
-    onBlur(id, processSelectValue<T, S, F>(schema, value, options));
+    onBlur(id, enumOptionsValueForIndex<S>(value, enumOptions));
   };
 
   const _onFocus = ({
     target: { value },
   }: React.FocusEvent<HTMLInputElement>) =>
-    onFocus(id, processSelectValue<T, S, F>(schema, value, options));
+    onFocus(id, enumOptionsValueForIndex<S>(value, enumOptions));
 
   const getAutocompleteValues = useMemo(
     () => autocompletFunction(autocompleteType, setAutocompleteValues),

@@ -1,6 +1,6 @@
 {
   "name": "rjsf-templates",
-  "version": "1.0.8",
+  "version": "1.0.10",
   "description": "Templates for RJSF",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
